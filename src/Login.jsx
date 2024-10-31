@@ -10,41 +10,46 @@ import {
   MDBIcon,
   MDBInput
 } from 'mdb-react-ui-kit';
+import { useAuth0 } from "@auth0/auth0-react";
 
 function App() {
+  const { loginWithRedirect } = useAuth0();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
   const validateForm = () => {
-    // Regular expression for basic email validation
     const emailPattern = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
 
     if (!emailPattern.test(email)) {
       setError('Please enter a valid email address.');
-      return false; // Prevent form submission
+      return false;
     }
 
     if (password.length < 6) {
       setError('Password must be at least 6 characters long.');
-      return false; // Prevent form submission
+      return false;
     }
 
-    setError(''); // Clear error if validation passes
-    return true; // Allow form submission
+    setError('');
+    return true;
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault(); // Prevent default form submission
+    e.preventDefault();
     if (validateForm()) {
-      // Handle successful validation (e.g., submit the form)
-      alert('Login successfull!');
+      alert('Login successful!');
+      // Implement your login logic here
     }
+  };
+
+  const handleGoogleSignUp = () => {
+    loginWithRedirect({ connection: 'google-oauth2' });
   };
 
   return (
     <MDBContainer className="my-5">
-      <MDBCard>
+      <MDBCard className="shadow">
         <MDBRow className='g-0'>
           <MDBCol md='6'>
             <MDBCardImage 
@@ -54,14 +59,14 @@ function App() {
             />
           </MDBCol>
 
-          <MDBCol md='6'>
+          <MDBCol md='6' className="d-flex flex-column justify-content-center">
             <MDBCardBody className='d-flex flex-column'>
-              <div className='d-flex flex-row mt-2'>
+              <div className='d-flex flex-row mt-2 mb-4'>
                 <MDBIcon fas icon="cubes fa-3x me-3" style={{ color: '#ff6219' }}/>
-                <span className="h1 fw-bold mb-0 ">Login Page</span>
+                <span className="h1 fw-bold mb-0">Login Page</span>
               </div>
 
-              <h5 className="fw-normal my-4 pb-3 ms-3" style={{ letterSpacing: '1px' }}>
+              <h5 className="fw-normal my-4 pb-3" style={{ letterSpacing: '1px' }}>
                 Sign into your account
               </h5>
 
@@ -85,9 +90,21 @@ function App() {
                   onChange={(e) => setPassword(e.target.value)} 
                 />
 
-                {error && <div className="text-danger mb-4">{error}</div>} {/* Error message */}
+                {error && <div className="text-danger mb-4">{error}</div>}
 
-                <MDBBtn className="mb-4 px-5" color='dark' size='lg'>Login</MDBBtn>
+                <MDBBtn type="submit" className="mb-4 px-5" color='dark' size='lg'>
+                  Login
+                </MDBBtn>
+
+                <MDBBtn 
+                  onClick={handleGoogleSignUp} 
+                  className="mb-4 px-5" 
+                  style={{ backgroundColor: '#DB4437', color: 'white' }} 
+                  size='lg'
+                >
+                  <MDBIcon fab icon="google" className="me-2" />
+                  Sign Up with Google
+                </MDBBtn>
               </form>
             </MDBCardBody>
           </MDBCol>
